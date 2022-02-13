@@ -1,25 +1,25 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
+import Dropdown from './components/spotify/Dropdown'
+
 
 function App() {
+
+      const data = [
+            { value: 1, name: 'a' },
+            { value: 2, name: 'b' },
+            { value: 3, name: 'c' }
+      ]
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+<p> Hello ..</p>
+<Dropdown options={data} />
     </div>
   );
 }
+// onAfterSetupMiddleware
+
+// setupMiddlewares
 
 export default App;

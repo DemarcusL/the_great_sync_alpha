@@ -1,14 +1,14 @@
 // import logo from './logo.svg';
 import './App.css';
 import React, { useEffect } from 'react';
-import Dropdown from './spotify/Dropdown';
+import Dropdown from './App-1/Dropdown';
 import { Credentials } from './Credentials';
 import axios from 'axios';
 import { useState } from 'react'
-import Listbox from './spotify/Listbox';
-import Detail from './spotify/Detail';
-import User from './spotify/User';
-import Login from './spotify/Login';
+import Listbox from './App-1/Listbox';
+import Detail from './App-1/Detail';
+import User from './App-2/User';
+import Login from './App-2/Login';
 
 
 
@@ -23,50 +23,77 @@ function App() {
 
   ///////////States for passing props down to then be lifted and set /////////////
   const [token, setToken] = useState('');
-  const [genres, setGenres] = useState({ selectedGenre: '', listOfGenresFromAPI: [] });
-  const [playlist, setPlaylist] = useState({ selectedPlaylist: '', listOfPlaylistFromAPI: [] });
-  const [tracks, setTracks] = useState({ selectedTrack: '', listOfTracksFromAPI: [] });
+
+
+  const [genres, setGenres] = useState([]);
+
+  const [playlist, setPlaylist] = useState({
+    selectedPlaylist: '',
+    listOfPlaylistFromAPI: []
+  });
+
+  const [tracks, setTracks] = useState({
+    selectedTrack: '',
+    listOfTracksFromAPI: []
+  });
+
   const [trackDetail, setTrackDetail] = useState(null);
 
   const [userData, setUserData] = useState({});
 
   ///////////////////////////////////////////////////////////////////
-  useEffect(() => {
 
-    axios('https://accounts.spotify.com/api/token', {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Basic ' + btoa(spotify.ClientId + ':' + spotify.ClientSecret)
-      },
-      data: 'grant_type=client_credentials',
-      method: 'POST'
-    })
-      .then(tokenResponse => {
-        setToken(tokenResponse.data.access_token);
-        // console.log(tokenResponse.data.access_token);
-        axios('https://api.spotify.com/v1/browse/categories?locale=US', {
-          method: 'GET',
-          headers: { 'Authorization': 'Bearer ' + tokenResponse.data.access_token }
-        })
-          .then(genreResponse => {
-            // console.log(genreResponse)
-            setGenres({
-              selectedGenre: genres.selectedGenre,
-              listOfGenresFromAPI: genreResponse.data.categories.items
-            })
-          })
+  useEffect(async () => {
 
-      });
-  }, [genres.selectedGenre, spotify.ClientId, spotify.ClientSecret]);
+    var tokenResponse =
+      await axios('https://accounts.spotify.com/api/token', {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Basic ' + btoa(spotify.ClientId + ':' + spotify.ClientSecret)
+        },
+        data: 'grant_type=client_credentials',
+        method: 'POST'
+      })
+
+    var genreDataRes =
+      await axios('https://api.spotify.com/v1/browse/categories?locale=US', {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' +  tokenResponse.data.access_token,
+          'Content-Type': 'application/json'
+        },
+      })
+
+    setToken(tokenResponse.data.access_token);
+    setGenres(genreDataRes.data.categories.items);
+
+    console.log(genreDataRes);
+
+    // console.log(tokenResponse.data.access_token);
+
+  }, []);
+
+  // console.log(token);
+  console.log(genres);
+
+
+ 
+  useEffect(async () => {
+
+
+
+
+  }, []);
+
 
   // console.log({userData})
   /////////////////////////////////////////////////////////////////////
 
   const genreChanged = val => {
-    setGenres({
-      selectedGenre: val,
-      listOfGenresFromAPI: genres.listOfGenresFromAPI
-    })
+    // setGenres({
+    //   selectedGenre: val,
+    //   listOfGenresFromAPI: genres.listOfGenresFromAPI
+    // })
 
     axios(`https://api.spotify.com/v1/browse/categories/${val}/playlists?limit=10`, {
       method: 'GET',
@@ -118,15 +145,16 @@ function App() {
   }
 
 
+  // https://developer.spotify.com/documentation/
 
   return (
 
 
     <div className="spotify_box">
       {/* <p> test </p> */}
-{/* <Login /> */}
+      {/* <Login /> */}
       <form onSubmit={buttonClicked}>
-        <Dropdown options={genres.listOfGenresFromAPI} selectedValue={genres.selectedValue} changed={genreChanged} />
+        <Dropdown options={genres} changed={genreChanged} />
 
         <Dropdown options={playlist.listOfPlaylistFromAPI} selected={playlist.selectedPlaylist} changed={playlistChanged} />
 
