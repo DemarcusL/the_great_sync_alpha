@@ -106,7 +106,7 @@ function App() {
         })
       });
 
-    console.log(val);
+    // console.log(val);
   };
 
   const playlistChanged = val => {
@@ -148,7 +148,8 @@ function App() {
   // https://developer.spotify.com/documentation/
 
   return (
-
+<div>
+    <div className="app"><Login /></div>
 
     <div className="spotify_box">
       {/* <p> test </p> */}
@@ -171,6 +172,7 @@ function App() {
 
       </form>
     </div>
+</div>
 
   );
 
