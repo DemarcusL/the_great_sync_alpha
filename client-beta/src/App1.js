@@ -6,17 +6,39 @@ import { Credentials } from './Credentials';
 import axios from 'axios';
 import { useState } from 'react'
 import Listbox from './App-1/Listbox';
+import ListboxPlaylist from './App-1/ListboxPlaylist';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Button } from 'reactstrap'
+
+
 import Detail from './App-1/Detail';
 import User from './App-2/User';
 import Login from './App-2/Login';
 
+class Playlist {
+  description: string
+  owner: string
+  name: string
+  tracks: Object
+  constructor(name, owner, description, tracks) {
 
+    this.name = name;
+    this.owner = owner;
+    this.description = description;
+    this.tracks = tracks;
+
+
+  }
+
+
+
+}
 
 
 function App() {
 
   const spotify = Credentials();
-  const user_id = 'smedjan';
+  const user_id = 'chubbzfkga';
 
   console.log('rendering app ...')
 
@@ -39,7 +61,7 @@ function App() {
 
   const [trackDetail, setTrackDetail] = useState(null);
 
-  const [userData, setUserData] = useState({});
+  const [userPlaylists, setUserPlaylists] = useState([]);
 
   ///////////////////////////////////////////////////////////////////
 
@@ -59,34 +81,42 @@ function App() {
       await axios('https://api.spotify.com/v1/browse/categories?locale=US', {
         method: 'GET',
         headers: {
-          'Authorization': 'Bearer ' +  tokenResponse.data.access_token,
+          'Authorization': 'Bearer ' + tokenResponse.data.access_token,
           'Content-Type': 'application/json'
         },
       })
 
+    var userPlaylistRes = await axios(`https://api.spotify.com/v1/users/${user_id}/playlists?limit=2`, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + tokenResponse.data.access_token,
+        'Content-Type': 'application/json'
+      }
+    })
+
+    setUserPlaylists(userPlaylistRes.data.items);
+    console.log(userPlaylistRes);
+
     setToken(tokenResponse.data.access_token);
     setGenres(genreDataRes.data.categories.items);
 
-    console.log(genreDataRes);
+    // console.log(genreDataRes);
 
     // console.log(tokenResponse.data.access_token);
 
   }, []);
 
   // console.log(token);
-  console.log(genres);
+  // console.log(genres);
 
 
- 
+
   useEffect(async () => {
-
-
-
 
   }, []);
 
 
-  // console.log({userData})
+  console.log(userPlaylists)
   /////////////////////////////////////////////////////////////////////
 
   const genreChanged = val => {
@@ -148,32 +178,42 @@ function App() {
   // https://developer.spotify.com/documentation/
 
   return (
-<div>
-    <div className="app"><Login /></div>
+    <div>
+      <div className="app"><Login /></div>
 
-    <div className="spotify_box">
-      {/* <p> test </p> */}
-      {/* <Login /> */}
-      <form onSubmit={buttonClicked}>
-        <Dropdown options={genres} changed={genreChanged} />
-
-        <Dropdown options={playlist.listOfPlaylistFromAPI} selected={playlist.selectedPlaylist} changed={playlistChanged} />
-
-        <div className="col-sm-6 row form-group px-0">
-          <button type='submit'> Search </button>
-        </div>
-
-        <div className="row">
-          <Listbox items={tracks.listOfTracksFromAPI} clicked={listboxClicked} />
-
-          {trackDetail && <Detail {...trackDetail} />}
-        </div>
+      <div className="genre-box">
 
 
-      </form>
+        <form onSubmit={buttonClicked}>
+        <h3 className='genre-header' > Popular Genres </h3>
+
+          <div>
+            <Dropdown options={genres} changed={genreChanged} />
+
+            <Dropdown options={playlist.listOfPlaylistFromAPI} selected={playlist.selectedPlaylist} changed={playlistChanged} />
+          </div>
+
+          <div className="">
+            <Button type='submit'> Search </Button>
+          </div>
+
+          <div className="row">
+            <Listbox items={tracks.listOfTracksFromAPI} clicked={listboxClicked} />
+          </div>
+        </form>
+
+          <div>
+            {trackDetail && <Detail {...trackDetail} />}
+
+          </div>
+
+
+        {/* <div class='list-group'>
+          <ListboxPlaylist class='list-group-item' items={userPlaylists} clicked={listboxClicked} />
+        </div> */}
+
+      </div>
     </div>
-</div>
-
   );
 
 
