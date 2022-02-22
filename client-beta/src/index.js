@@ -7,7 +7,13 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
+<div className='home'>
+<div className="welcome-block"><h1><b> Welcome to Connectify</b></h1></div>
+
+<div className="welcome-block"><h3> Please select a playlist for transfering below</h3></div>
+
     <App1 />
+</div>
   </React.StrictMode>,
   document.getElementById('root')
 );

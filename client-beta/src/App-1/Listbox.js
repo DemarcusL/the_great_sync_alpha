@@ -14,7 +14,7 @@ const Listbox = props => {
                     props.items.map((item, idx) => 
                     <button key={idx}
                         onClick={clicked}
-                        className="list-group-item list-group-item-action list-group-item-light"
+                        className="list-group-item list-group-item-action "
                         id={item.track.id}>
                             
                             {item.track.name}

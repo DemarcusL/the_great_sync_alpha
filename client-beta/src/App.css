@@ -1,11 +1,10 @@
 /* Shared CSS */
 .link {
 text-decoration: none;
-color: greenyellow;
+color: rgb(13, 228, 102);
 }
 
 .app {
-
 max-height: 100vh;
 }
 
@@ -27,18 +26,44 @@ padding: 5%;
 
 .genre-header {
 background-color: black;
+/* display: flex; */
+margin: 0px;
 color: whitesmoke;
 max-width: 50vw;
 max-height: 50vh;
-/* text-align: center; */
+text-align: center;
 }
 
 form {
 background-color: black;
+display: flex;
+padding: 1rem;
 max-width: 50vw;
 max-height: 50vh;
 color: whitesmoke;
 text-align: center;
+/* border: 2px rgb(255, 255, 255) solid; */
+font-size:.8rem;
+}
+
+.genre-intro {
+font-size: small;
+text-align: left;
+}
+
+.user-playlists-div {
+max-width: 50vw;
+max-height: 50vh;
+background-color: black;
+color: whitesmoke;
+
+}
+
+.user-playlists-box {
+max-width: 50vw;
+max-height: 50vh;
+/* background-color: black; */
+
 }
 
 /* iTunes CSS */

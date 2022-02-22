@@ -15,24 +15,20 @@ import Detail from './App-1/Detail';
 import User from './App-2/User';
 import Login from './App-2/Login';
 
-class Playlist {
-  description: string
-  owner: string
-  name: string
-  tracks: Object
-  constructor(name, owner, description, tracks) {
+// class Playlist {
+//   description: string
+//   owner: string
+//   name: string
+//   tracks: Object
+//   constructor(name, owner, description, tracks) {
 
-    this.name = name;
-    this.owner = owner;
-    this.description = description;
-    this.tracks = tracks;
+//     this.name = name;
+//     this.owner = owner;
+//     this.description = description;
+//     this.tracks = tracks;
+//   }
 
-
-  }
-
-
-
-}
+// }
 
 
 function App() {
@@ -40,7 +36,6 @@ function App() {
   const spotify = Credentials();
   const user_id = 'chubbzfkga';
 
-  console.log('rendering app ...')
 
 
   ///////////States for passing props down to then be lifted and set /////////////
@@ -62,6 +57,8 @@ function App() {
   const [trackDetail, setTrackDetail] = useState(null);
 
   const [userPlaylists, setUserPlaylists] = useState([]);
+  const [user, setUser] = useState([]);
+
 
   ///////////////////////////////////////////////////////////////////
 
@@ -183,9 +180,11 @@ function App() {
 
       <div className="genre-box">
 
+        <h3 className='genre-header' > Popular Genres </h3>
+
+        <h6 className="genre-header"> Choose from Spotify's most popular genres</h6>
 
         <form onSubmit={buttonClicked}>
-        <h3 className='genre-header' > Popular Genres </h3>
 
           <div>
             <Dropdown options={genres} changed={genreChanged} />
@@ -197,10 +196,14 @@ function App() {
             <Button type='submit'> Search </Button>
           </div>
 
-          <div className="row">
+          {/* <div className="">
+            <Listbox items={tracks.listOfTracksFromAPI} clicked={listboxClicked} />
+          </div> */}
+        </form>
+
+          <div className="">
             <Listbox items={tracks.listOfTracksFromAPI} clicked={listboxClicked} />
           </div>
-        </form>
 
           <div>
             {trackDetail && <Detail {...trackDetail} />}
@@ -208,9 +211,9 @@ function App() {
           </div>
 
 
-        {/* <div class='list-group'>
-          <ListboxPlaylist class='list-group-item' items={userPlaylists} clicked={listboxClicked} />
-        </div> */}
+        <div className='user-playlists-div'>
+          <ListboxPlaylist className='user-playlists-box' items={userPlaylists} clicked={listboxClicked} />
+        </div>
 
       </div>
     </div>
