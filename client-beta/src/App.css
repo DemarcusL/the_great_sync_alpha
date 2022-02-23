@@ -24,10 +24,16 @@ img {
 padding: 5%;
 }
 
+.genre-box{
+max-width: 50vw;
+max-height: 50vh;
+float: left;
+}
+
 .genre-header {
 background-color: black;
 /* display: flex; */
-margin: 0px;
+margin: 10px;
 color: whitesmoke;
 max-width: 50vw;
 max-height: 50vh;
@@ -36,8 +42,8 @@ text-align: center;
 
 form {
 background-color: black;
-display: flex;
-padding: 1rem;
+/* display: flex; */
+padding: 2rem;
 max-width: 50vw;
 max-height: 50vh;
 color: whitesmoke;
@@ -66,4 +72,36 @@ max-height: 50vh;
 
 }
 
+.dropdown {
+padding: 1rem;
+
+}
+
+.profile-box {
+max-width: 50vw;
+max-height: 50vh;
+}
+
+.profile-name {
+color: whitesmoke;
+text-align: center;
+}
+
+.profile.id{
+color: whitesmoke;
+}
+
+h6 {
+
+
+}
+
 /* iTunes CSS */
+
+.itunes-box{
+max-width: 50vw;
+max-height: 50vh;
+float: right;
+/* text-align: right; */
+/* padding-left: 50%; */
+}

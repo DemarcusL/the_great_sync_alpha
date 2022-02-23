@@ -9,29 +9,24 @@ import Listbox from './App-1/Listbox';
 import ListboxPlaylist from './App-1/ListboxPlaylist';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from 'reactstrap'
+import ListBoxProfile from './App-1/ListBoxProfile';
+import { getTokenFromUrl } from "./App-2/Spotify";
+import SpotifyWebApi from "spotify-web-api-js";
+// import { itunesApiRequest, mediaTypes } from './utils';
+
+
 
 
 import Detail from './App-1/Detail';
 import User from './App-2/User';
 import Login from './App-2/Login';
+import Logout from './App-2/Logout';
 
-// class Playlist {
-//   description: string
-//   owner: string
-//   name: string
-//   tracks: Object
-//   constructor(name, owner, description, tracks) {
-
-//     this.name = name;
-//     this.owner = owner;
-//     this.description = description;
-//     this.tracks = tracks;
-//   }
-
-// }
 
 
 function App() {
+
+  const spotifyAPI = new SpotifyWebApi();
 
   const spotify = Credentials();
   const user_id = 'chubbzfkga';
@@ -57,7 +52,8 @@ function App() {
   const [trackDetail, setTrackDetail] = useState(null);
 
   const [userPlaylists, setUserPlaylists] = useState([]);
-  const [user, setUser] = useState([]);
+  const [userProfile, setUserProfile] = useState([]);
+  const [iTunesSerch, setItunesSearch] = useState({searchResults:''})
 
 
   ///////////////////////////////////////////////////////////////////
@@ -83,7 +79,7 @@ function App() {
         },
       })
 
-    var userPlaylistRes = await axios(`https://api.spotify.com/v1/users/${user_id}/playlists?limit=2`, {
+    var userPlaylistRes = await axios(`https://api.spotify.com/v1/users/${user_id}/playlists?limit=5`, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + tokenResponse.data.access_token,
@@ -91,11 +87,38 @@ function App() {
       }
     })
 
-    setUserPlaylists(userPlaylistRes.data.items);
-    console.log(userPlaylistRes);
+    var userProfileRes = await axios(`https://api.spotify.com/v1/users/${user_id}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + tokenResponse.data.access_token,
+        'Content-Type': 'application/json'
+      }
+    })
 
-    setToken(tokenResponse.data.access_token);
+    // 	var updateiTunesSearch = (text, media) => {
+    // 		const response = await axios(itunesApiRequest(text, media));
+    // return 
+    // 	}
+
+    const hash = getTokenFromUrl();
+    window.location.hash = "";
+    const _token = hash.access_token;
+
+    if (_token) {
+      setToken(_token);
+      spotifyAPI.setAccessToken(_token);
+    }
+
+    console.log("token recieved");
+
+    setUserPlaylists(userPlaylistRes.data.items);
+    // console.log(userPlaylistRes);
+    // setToken(tokenResponse.data.access_token);
     setGenres(genreDataRes.data.categories.items);
+    // console.log(userProfileRes.data);
+    setUserProfile(userProfileRes.data)
+    // setItunesSearch({ searchResults: response.results });
+
 
     // console.log(genreDataRes);
 
@@ -103,8 +126,13 @@ function App() {
 
   }, []);
 
+
+
   // console.log(token);
   // console.log(genres);
+  // console.log(userPlaylists)
+  // console.log(userProfile);
+  // console.log(iTunesSerch);
 
 
 
@@ -113,14 +141,10 @@ function App() {
   }, []);
 
 
-  console.log(userPlaylists)
   /////////////////////////////////////////////////////////////////////
 
   const genreChanged = val => {
-    // setGenres({
-    //   selectedGenre: val,
-    //   listOfGenresFromAPI: genres.listOfGenresFromAPI
-    // })
+
 
     axios(`https://api.spotify.com/v1/browse/categories/${val}/playlists?limit=10`, {
       method: 'GET',
@@ -172,50 +196,66 @@ function App() {
   }
 
 
-  // https://developer.spotify.com/documentation/
 
   return (
     <div>
+
       <div className="app"><Login /></div>
 
       <div className="genre-box">
 
-        <h3 className='genre-header' > Popular Genres </h3>
 
-        <h6 className="genre-header"> Choose from Spotify's most popular genres</h6>
+        <h6 className="genre-header"> Choose 1 of your playlists below </h6>
 
-        <form onSubmit={buttonClicked}>
-
-          <div>
-            <Dropdown options={genres} changed={genreChanged} />
-
-            <Dropdown options={playlist.listOfPlaylistFromAPI} selected={playlist.selectedPlaylist} changed={playlistChanged} />
-          </div>
-
-          <div className="">
-            <Button type='submit'> Search </Button>
-          </div>
-
-          {/* <div className="">
-            <Listbox items={tracks.listOfTracksFromAPI} clicked={listboxClicked} />
-          </div> */}
-        </form>
-
-          <div className="">
-            <Listbox items={tracks.listOfTracksFromAPI} clicked={listboxClicked} />
-          </div>
-
-          <div>
-            {trackDetail && <Detail {...trackDetail} />}
-
-          </div>
+        <div>
+          <ListBoxProfile className="user-profile-box" items={userProfile} />
+        </div>
 
 
         <div className='user-playlists-div'>
           <ListboxPlaylist className='user-playlists-box' items={userPlaylists} clicked={listboxClicked} />
         </div>
 
+        <h6 className="genre-header"> or choose from Spotify's popular playlists </h6>
+
+        <h3 className='genre-header' > Popular Genres </h3>
+
+        <form onSubmit={buttonClicked}>
+
+          <div>
+            <Dropdown className='dropdown' options={genres} changed={genreChanged} />
+
+            <Dropdown className='dropdown' options={playlist.listOfPlaylistFromAPI} selected={playlist.selectedPlaylist} changed={playlistChanged} />
+          </div>
+
+          <div className='dropdown'>
+            <Button type='submit'> Search </Button>
+          </div>
+
+          <div className="">
+            <Listbox items={tracks.listOfTracksFromAPI} clicked={listboxClicked} />
+          </div>
+
+        </form>
+
+        <div className="tracklist-box">
+          <Listbox items={tracks.listOfTracksFromAPI} clicked={listboxClicked} />
+        </div>
+
+        <div>
+          {trackDetail && <Detail {...trackDetail} />}
+        </div>
+
+        <div>
+
+        </div>
+
       </div>
+
+        <div id="appleid-signin" data-color="black" data-border="false" data-type="sign in" className="itunes-box"></div>
+        <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
+
+
     </div>
   );
 

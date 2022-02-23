@@ -74,6 +74,11 @@ text-align: center;
 
 }
 
+.app-1{
+max-width: 50vw;
+max-height: 50vh;
+}
+
 div.instructions{
 /* max-width: 50vw; */
 /* width: 35vw; */
